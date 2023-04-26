@@ -1,6 +1,7 @@
 package com.turbosoft.webpostmessagepoc
 
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Base64
@@ -8,6 +9,10 @@ import android.util.Log
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.webkit.JavaScriptReplyProxy
+import androidx.webkit.WebMessageCompat
+import androidx.webkit.WebViewCompat
+import androidx.webkit.WebViewFeature
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,6 +28,15 @@ class MainActivity : AppCompatActivity() {
         webView.settings.domStorageEnabled = true
         webView.settings.allowFileAccess = true
         webView.addJavascriptInterface(JsIntegration(), "Android")
+        val myListener =
+            WebViewCompat.WebMessageListener { view: WebView, message: WebMessageCompat, sourceOrigin: Uri, isMainFrame: Boolean, replyProxy: JavaScriptReplyProxy -> // do something about view, message, sourceOrigin and isMainFrame.
+                Log.d("IntegrationDebug", "Do something with message")
+            }
+
+            if (WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) {
+                Log.d("IntegrationDebug", "WebViewFeature.WEB_MESSAGE_LISTENER -> SUPPORTED")
+                WebViewCompat.addWebMessageListener(webView, "android", setOf("*"), myListener)
+            }
 
         webView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(
@@ -67,6 +81,7 @@ class MainActivity : AppCompatActivity() {
                 <script type="text/javascript">
                     function sendAndroidMessage(toast) {
                         Android.receiveMessage(toast);
+                        android.postMessage(toast);
                     }
                 </script>
 

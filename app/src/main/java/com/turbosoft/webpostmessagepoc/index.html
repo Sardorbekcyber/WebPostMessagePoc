@@ -6,6 +6,7 @@
 <script type="text/javascript">
     function sendAndroidMessage(toast) {
         Android.receiveMessage(toast);
+        android.postMessage(toast)
     }
 </script>
 
