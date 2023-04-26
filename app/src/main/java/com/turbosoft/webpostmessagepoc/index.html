@@ -1,0 +1,13 @@
+<html>
+<body>
+
+<input type="button" value="Say hello" onClick="sendAndroidMessage('Hello Android!')"/>
+
+<script type="text/javascript">
+    function sendAndroidMessage(toast) {
+        Android.receiveMessage(toast);
+    }
+</script>
+
+</body>
+</html>
